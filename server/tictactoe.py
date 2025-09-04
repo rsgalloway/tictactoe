@@ -34,6 +34,7 @@ WINNING_LINES = [
 
 class Errors:
     """Error message constants."""
+
     CELL_OCCUPIED = "cell occupied"
     GAME_OVER = "game is already over"
     INVALID_BOARD = "invalid board"
@@ -44,6 +45,7 @@ class Errors:
 
 class Status:
     """Game status constants."""
+
     DRAW = "draw"
     PLAYING = "playing"
     O_WON = "o_won"
