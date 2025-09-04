@@ -2,7 +2,9 @@ __doc__ = """
 Contains the main application logic for the server.
 """
 
-from flask import Flask
+from flask import Flask, request, jsonify
+
+from tictactoe import new_board
 
 app = Flask(__name__)
 
@@ -10,6 +12,11 @@ app = Flask(__name__)
 @app.get("/health")
 def health():
     return {"ok": True}, 200
+
+
+@app.post("/api/new")
+def api_new():
+    return jsonify({"board": new_board(), "next": "X"})
 
 
 if __name__ == "__main__":
