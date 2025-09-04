@@ -3,5 +3,5 @@ WORKDIR /app
 COPY package.json package-lock.json* .npmrc* ./
 RUN npm ci || npm i --package-lock-only && npm ci
 COPY . .
-EXPOSE 3000
+EXPOSE 5173
 CMD ["npm", "run", "dev"]

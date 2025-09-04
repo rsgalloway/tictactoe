@@ -12,7 +12,7 @@ services:
 
   web:
     build: ./client
-    ports: ["3000:3000"]
+    ports: ["5173:5173"]
     environment:
       - API_URL=http://localhost:8080
     depends_on:
