@@ -10,11 +10,6 @@ Board is a 9-char string, for example, an empty board: "........."
 
 from typing import Optional, Tuple, List
 
-# board characters
-CHAR_EMPTY = "."
-CHAR_HUMAN = "X"
-CHAR_AI = "O"
-
 # default board size
 BOARD_SIZE = 9
 
@@ -30,6 +25,14 @@ WINNING_LINES = [
     (3, 4, 5),
     (6, 7, 8),
 ]
+
+
+class Chars:
+    """Character constants for the board."""
+
+    AI = "O"
+    EMPTY = "."
+    HUMAN = "X"
 
 
 class Errors:
@@ -60,7 +63,7 @@ def new_board(size: int = BOARD_SIZE) -> str:
     """
     global BOARD_SIZE
     BOARD_SIZE = size
-    return CHAR_EMPTY * size
+    return Chars.EMPTY * size
 
 
 def is_terminal(board: str) -> Tuple[str, Optional[List[int]]]:
@@ -74,13 +77,13 @@ def is_terminal(board: str) -> Tuple[str, Optional[List[int]]]:
 
     for a, b1, c in WINNING_LINES:
         trio = board[a] + board[b1] + board[c]
-        if trio == CHAR_HUMAN * int(BOARD_SIZE**0.5):
+        if trio == Chars.HUMAN * int(BOARD_SIZE**0.5):
             return Status.X_WON, [a, b1, c]
-        if trio == CHAR_AI * int(BOARD_SIZE**0.5):
+        if trio == Chars.AI * int(BOARD_SIZE**0.5):
             return Status.O_WON, [a, b1, c]
 
     # if no empty cells, it's a draw
-    if CHAR_EMPTY not in board:
+    if Chars.EMPTY not in board:
         return Status.DRAW, None
 
     return Status.PLAYING, None
@@ -91,10 +94,10 @@ def apply_move(board: str, idx: int, mark: str) -> str:
 
     :param board: 9-char string representing the board.
     :param idx: index (0-8) to place the mark.
-    :param mark: either CHAR_HUMAN ('X') or CHAR_AI ('O').
+    :param mark: either Chars.HUMAN ('X') or Chars.AI ('O').
     :return: new board string with the move applied.
     """
-    assert mark in (CHAR_HUMAN, CHAR_AI)
+    assert mark in (Chars.HUMAN, Chars.AI)
     return board[:idx] + mark + board[idx + 1 :]
 
 
@@ -116,11 +119,11 @@ def validate_move(board: str, idx: Optional[int]) -> Tuple[bool, str]:
     if status != Status.PLAYING:
         return False, Errors.GAME_OVER
 
-    if board[idx] != CHAR_EMPTY:
+    if board[idx] != Chars.EMPTY:
         return False, Errors.CELL_OCCUPIED
 
     # human must be first mover
-    if board.count(CHAR_HUMAN) < board.count(CHAR_AI):
+    if board.count(Chars.HUMAN) < board.count(Chars.AI):
         return False, Errors.INVALID_TURN_ORDER
 
     return True, ""
@@ -134,6 +137,6 @@ def best_ai_reply(board: str) -> int:
     :return: index (0-8) for AI's move.
     """
     for i, ch in enumerate(board):
-        if ch == CHAR_EMPTY:
+        if ch == Chars.EMPTY:
             return i
     raise RuntimeError(Errors.NO_VALID_MOVES)
