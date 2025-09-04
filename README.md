@@ -2,6 +2,14 @@
 
 A monorepo that contains a Tic-Tac-Toe game.
 
+| Feature          | Description                                           |
+|------------------|-------------------------------------------------------|
+| Frontend         | React SPA (Vite)                                     |
+| Backend          | Python Flask API, and game logic                     |
+| State            | Server-authoritative. Web client sends moves, server returns updated board. |
+| Containerization  | Separate Dockerfiles (client/server)                 |
+| Deployment       | ECS Fargate                                          |
+
 ## Server
 
 Set up a virtual environment and install requirements:
