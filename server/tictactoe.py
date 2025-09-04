@@ -32,6 +32,24 @@ WINNING_LINES = [
 ]
 
 
+class Errors:
+    """Error message constants."""
+    INVALID_BOARD = "invalid board"
+    INVALID_MOVE_INDEX = "invalid move index"
+    GAME_OVER = "game is already over"
+    CELL_OCCUPIED = "cell occupied"
+    INVALID_TURN_ORDER = "invalid turn order"
+    NO_VALID_MOVES = "no legal moves"
+
+
+class Status:
+    """Game status constants."""
+    PLAYING = "playing"
+    DRAW = "draw"
+    X_WON = "x_won"
+    O_WON = "o_won"
+
+
 def new_board(size: int = BOARD_SIZE) -> str:
     """Create a new empty board.
 
@@ -50,20 +68,20 @@ def is_terminal(board: str) -> Tuple[str, Optional[List[int]]]:
     :return: (status, winning_line_or_None)
     """
     b = board
-    assert isinstance(b, str) and len(b) == BOARD_SIZE, "invalid board"
+    assert isinstance(b, str) and len(b) == BOARD_SIZE, Errors.INVALID_BOARD
 
     for a, b1, c in WINNING_LINES:
         trio = board[a] + board[b1] + board[c]
         if trio == CHAR_HUMAN * int(BOARD_SIZE**0.5):
-            return "x_won", [a, b1, c]
+            return Status.X_WON, [a, b1, c]
         if trio == CHAR_AI * int(BOARD_SIZE**0.5):
-            return "o_won", [a, b1, c]
+            return Status.O_WON, [a, b1, c]
 
     # if no empty cells, it's a draw
     if CHAR_EMPTY not in board:
-        return "draw", None
+        return Status.DRAW, None
 
-    return "playing", None
+    return Status.PLAYING, None
 
 
 def apply_move(board: str, idx: int, mark: str) -> str:
@@ -86,22 +104,22 @@ def validate_move(board: str, idx: Optional[int]) -> Tuple[bool, str]:
     :return: (is_valid, error_message). If is_valid is True, error_message is empty.
     """
     if not isinstance(board, str) or len(board) != BOARD_SIZE:
-        return False, "invalid board"
+        return False, Errors.INVALID_BOARD
 
     if idx is None or not isinstance(idx, int) or not (0 <= idx <= BOARD_SIZE - 1):
-        return False, "invalid move index"
+        return False, Errors.INVALID_MOVE_INDEX
 
     status, _ = is_terminal(board)
 
-    if status != "playing":
-        return False, "game is already over"
+    if status != Status.PLAYING:
+        return False, Errors.GAME_OVER
 
     if board[idx] != CHAR_EMPTY:
-        return False, "cell occupied"
+        return False, Errors.CELL_OCCUPIED
 
     # human must be first mover
     if board.count(CHAR_HUMAN) < board.count(CHAR_AI):
-        return False, "invalid turn order"
+        return False, Errors.INVALID_TURN_ORDER
 
     return True, ""
 
@@ -116,4 +134,4 @@ def best_ai_reply(board: str) -> int:
     for i, ch in enumerate(board):
         if ch == CHAR_EMPTY:
             return i
-    raise RuntimeError("no legal moves")
+    raise RuntimeError(Errors.NO_VALID_MOVES)
