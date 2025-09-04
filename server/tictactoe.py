@@ -34,20 +34,20 @@ WINNING_LINES = [
 
 class Errors:
     """Error message constants."""
+    CELL_OCCUPIED = "cell occupied"
+    GAME_OVER = "game is already over"
     INVALID_BOARD = "invalid board"
     INVALID_MOVE_INDEX = "invalid move index"
-    GAME_OVER = "game is already over"
-    CELL_OCCUPIED = "cell occupied"
     INVALID_TURN_ORDER = "invalid turn order"
     NO_VALID_MOVES = "no legal moves"
 
 
 class Status:
     """Game status constants."""
-    PLAYING = "playing"
     DRAW = "draw"
-    X_WON = "x_won"
+    PLAYING = "playing"
     O_WON = "o_won"
+    X_WON = "x_won"
 
 
 def new_board(size: int = BOARD_SIZE) -> str:
