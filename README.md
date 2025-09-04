@@ -2,6 +2,8 @@
 
 A monorepo that contains a Tic-Tac-Toe game.
 
+### Architecture
+
 | Feature          | Description                                           |
 |------------------|-------------------------------------------------------|
 | Frontend         | React SPA (Vite)                                     |
@@ -9,6 +11,21 @@ A monorepo that contains a Tic-Tac-Toe game.
 | State            | Server-authoritative. Web client sends moves, server returns updated board. |
 | Containerization  | Separate Dockerfiles (client/server)                 |
 | Deployment       | ECS Fargate                                          |
+
+### API Design
+
+Minimal, stateless API using a compact board representation to avoid server
+session complexity. The board is a 9-char string, representing positions 0–8:
+
+- empty: "."
+- human: "X"
+- AI: "O"
+
+So for example, and empty board would be "........."
+
+#### Endpoints
+
+- `POST /api/new` -> `{ board: ".........", next: "X" }`
 
 ## Server
 
