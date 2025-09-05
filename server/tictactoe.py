@@ -1,5 +1,5 @@
 __doc__ = """
-Contains the Tic-Tac-Toe game logic.
+Contains the Tic-Tac-Toe game logic, including initial minimax implementation.
 
 Board is a 9-char string, for example, an empty board: "........."
 
@@ -11,11 +11,11 @@ Board is a 9-char string, for example, an empty board: "........."
 from typing import Optional, Tuple, List
 
 # default board size
-BOARD_SIZE = 9
+BOARD_SIZE: int = 9
 
 # contains all possible winning lines (tuples of board indices)
 # TODO: auto-generate this depending on BOARD_SIZE
-WINNING_LINES = [
+WINNING_LINES: List[Tuple[int, int, int]] = [
     (0, 1, 2),
     (0, 3, 6),
     (0, 4, 8),
@@ -30,29 +30,29 @@ WINNING_LINES = [
 class Chars:
     """Character constants for the board."""
 
-    AI = "O"
-    EMPTY = "."
-    HUMAN = "X"
+    AI: str = "O"
+    EMPTY: str = "."
+    HUMAN: str = "X"
 
 
 class Errors:
     """Error message constants."""
 
-    CELL_OCCUPIED = "cell occupied"
-    GAME_OVER = "game is already over"
-    INVALID_BOARD = "invalid board"
-    INVALID_MOVE_INDEX = "invalid move index"
-    INVALID_TURN_ORDER = "invalid turn order"
-    NO_VALID_MOVES = "no legal moves"
+    CELL_OCCUPIED: str = "cell occupied"
+    GAME_OVER: str = "game is already over"
+    INVALID_BOARD: str = "invalid board"
+    INVALID_MOVE_INDEX: str = "invalid move index"
+    INVALID_TURN_ORDER: str = "invalid turn order"
+    NO_VALID_MOVES: str = "no legal moves"
 
 
 class Status:
     """Game status constants."""
 
-    DRAW = "draw"
-    PLAYING = "playing"
-    O_WON = "o_won"
-    X_WON = "x_won"
+    DRAW: str = "draw"
+    PLAYING: str = "playing"
+    O_WON: str = "o_won"
+    X_WON: str = "x_won"
 
 
 def new_board(size: int = BOARD_SIZE) -> str:
@@ -101,12 +101,46 @@ def apply_move(board: str, idx: int, mark: str) -> str:
     return board[:idx] + mark + board[idx + 1 :]
 
 
+def _next_player(board: str) -> str:
+    """Whose turn is it given board counts? Human (X) always starts.
+
+    :param board: 9-char string representing the board.
+    :return: Chars.HUMAN or Chars.AI
+    """
+    x = board.count(Chars.HUMAN)
+    o = board.count(Chars.AI)
+    return Chars.HUMAN if x == o else Chars.AI
+
+
+def _score_terminal(status: str) -> int:
+    """Score from AI ('O') perspective.
+
+    :param status: game status string.
+    :return: +1 if AI won, -1 if human won, 0 if draw.
+    """
+    if status == Status.O_WON:
+        return +1
+    if status == Status.X_WON:
+        return -1
+    return 0
+
+
+def _available_moves(board: str) -> List[int]:
+    """Return list of available move indices. Iterates left to right, top to bottom.
+
+    :param board: 9-char string representing the board.
+    :return: list of indices (0-8) that are empty.
+    """
+    return [i for i, ch in enumerate(board) if ch == Chars.EMPTY]
+
+
 def validate_move(board: str, idx: Optional[int]) -> Tuple[bool, str]:
     """Validate a proposed move.
 
     :param board: 9-char string representing the board.
     :param idx: index (0-8) for the proposed move.
     :return: (is_valid, error_message). If is_valid is True, error_message is empty.
+    :raises AssertionError: if board is invalid or idx is invalid.
     """
     if not isinstance(board, str) or len(board) != BOARD_SIZE:
         return False, Errors.INVALID_BOARD
@@ -129,14 +163,91 @@ def validate_move(board: str, idx: Optional[int]) -> Tuple[bool, str]:
     return True, ""
 
 
-# TODO: implement minimax + alpha-beta pruning
-def best_ai_reply(board: str) -> int:
-    """Return optimal index for AI ('O'). Placeholder picks first empty cell until implemented.
-
-    :param board: 9-char string representing the board.
-    :return: index (0-8) for AI's move.
+def _minimax(board: str, player: str, alpha: int, beta: int) -> Tuple[int, int]:
     """
-    for i, ch in enumerate(board):
-        if ch == Chars.EMPTY:
-            return i
-    raise RuntimeError(Errors.NO_VALID_MOVES)
+    Implements minimax with alpha-beta pruning.
+
+    Return (best_index, best_score) from current player's perspective, where score
+    is always from AI ('O') perspective.
+
+    :param board: current board state
+    :param player: current player to move, either Chars.HUMAN or Chars.AI
+    :param alpha: alpha value for alpha-beta pruning
+    :param beta: beta value for alpha-beta pruning
+    :return: (best_index, best_score)
+    :raises AssertionError: if board is invalid or player is invalid
+    """
+    status, _ = is_terminal(board)
+
+    # terminal position
+    if status != Status.PLAYING or player not in (Chars.HUMAN, Chars.AI):
+        return -1, _score_terminal(status)
+
+    # get all available moves
+    moves = _available_moves(board)
+
+    # AI player, maximizing
+    if player == Chars.AI:
+        best_idx = moves[0]
+        best_val = -2  # < worst possible
+        for idx in moves:
+            child = apply_move(board, idx, Chars.AI)
+            _, val = _minimax(child, Chars.HUMAN, alpha, beta)
+            if val > best_val:
+                best_val, best_idx = val, idx
+            alpha = max(alpha, best_val)
+            if beta <= alpha:
+                break
+        return best_idx, best_val
+
+    # human player, minimizing
+    else:
+        worst_idx = moves[0]
+        worst_val = +2  # > best possible
+        for idx in moves:
+            child = apply_move(board, idx, Chars.HUMAN)
+            _, val = _minimax(child, Chars.AI, alpha, beta)
+            if val < worst_val:
+                worst_val, worst_idx = val, idx
+            beta = min(beta, worst_val)
+            if beta <= alpha:
+                break
+        return worst_idx, worst_val
+
+
+def best_ai_reply(board: str) -> int:
+    """
+    Return optimal index for AI ('O').
+
+    :param board: current board state
+    :return: index (0-8) for AI's move
+    :raises RuntimeError: if no valid moves are available or game is over
+    """
+    status, _ = is_terminal(board)
+
+    # make sure game is still running
+    if status != Status.PLAYING:
+        raise RuntimeError(Errors.NO_VALID_MOVES)
+
+    # make sure it's AI's turn
+    player = _next_player(board)
+    if player != Chars.AI:
+        # simulate all human moves and pick the best one for AI
+        best_choice = None
+        best_val = -2
+        for idx in _available_moves(board):
+            child = apply_move(board, idx, Chars.HUMAN)
+            ai_idx, val = _minimax(child, Chars.AI, alpha=-2, beta=+2)
+            if val > best_val:
+                best_val = val
+                best_choice = ai_idx
+        if best_choice is None:
+            raise RuntimeError(Errors.NO_VALID_MOVES)
+        return best_choice
+
+    # run minimax
+    idx, _ = _minimax(board, Chars.AI, alpha=-2, beta=+2)
+    if idx is None or idx < 0:
+        raise RuntimeError(Errors.NO_VALID_MOVES)
+
+    return idx
