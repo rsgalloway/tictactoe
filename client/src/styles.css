@@ -1,117 +1,138 @@
 /* global styles for the app */
 :root {
-    --bg-0: #0d0f12;         /* near-black */
-    --bg-1: #151922;         /* deep indigo/charcoal */
-    --ink: #e5e7eb;          /* text */
-    --muted: #9aa3b2;
-    --accent: #c71f37;       /* blood red */
-    --accent-2: #8f153b;     /* wine */
-    --tile: #1e2430;
-    --tile-edge: #2a3141;
-    --glow: rgba(199,31,55,0.25);
-  }
-  
-  /* page background: gradient + film grain */
-  html, body, #root {
-    height: 100%;
-    margin: 0;
-    background:
-      radial-gradient(1200px 600px at 70% 10%, rgba(199,31,55,0.15), transparent 40%),
-      linear-gradient(180deg, var(--bg-0), var(--bg-1));
-    color: var(--ink);
-    font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  }
-  
-  /* header / branding */
-  .header {
-    display: grid;
-    gap: 6px;
-    place-items: center;
-    margin: 28px 0 8px;
-    text-align: center;
-  }
-  .title {
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    font-size: clamp(24px, 4vw, 34px);
-    text-shadow: 0 0 18px var(--glow);
-  }
-  .subtitle {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  
-  /* board container */
-  .board-wrap {
-    display: grid;
-    place-items: center;
-    gap: 16px;
-  }
-  
-  /* dynamic grid sizing from inline style gridTemplateColumns */
-  .board {
-    display: grid;
-    gap: 8px;
-    padding: 14px;
-    background: linear-gradient(180deg, #0f1217, #121722);
-    border: 1px solid var(--tile-edge);
-    border-radius: 18px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.02) inset;
-  }
-  
-  /* tiles */
-  .cell {
-    width: 84px; height: 84px;
-    display: grid; place-items: center;
-    background: var(--tile);
-    border: 1px solid var(--tile-edge);
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35) inset;
-    transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
-    cursor: pointer;
-  }
-  .cell:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  .cell:hover:not(:disabled) {
-    transform: translateY(-1px);
-    border-color: #3a4358;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.45) inset, 0 0 0 2px rgba(255,255,255,0.02);
-  }
-  .cell:disabled {
-    opacity: 0.9;
-    cursor: default;
-  }
-  
-  /* icon sizing */
-  .icon { width: 56px; height: 56px; display: block; }
-  .icon--x { color: var(--x-color); }
-  .icon--o { color: var(--o-color); }
-  
-  /* controls */
-  .controls {
-    display: flex; gap: 16px; align-items: center; justify-content: center;
-    flex-wrap: wrap;
-  }
-  .radio {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.03);
-    padding: 6px 10px; border-radius: 12px; border: 1px solid var(--tile-edge);
-  }
-  .radio input { accent-color: var(--accent); }
-  
-  /* status */
-  .status {
-    min-height: 24px;
-    color: var(--muted);
-  }
-  .status .win { color: var(--accent); }
-  .status .ai  { color: var(--x-color); }
-  
-  /* prefers-reduced-motion */
-  @media (prefers-reduced-motion: reduce) {
-    .cell { transition: none; }
-    .title { text-shadow: none; }
-  }
-  
+  --bg-0: #0d0f12;         /* near-black */
+  --bg-1: #151922;         /* deep indigo/charcoal */
+  --ink: #e5e7eb;          /* text */
+  --muted: #9aa3b2;
+  --accent: #c71f37;       /* blood red */
+  --accent-2: #8f153b;     /* wine */
+  --tile: #1e2430;
+  --tile-edge: #2a3141;
+  --glow: rgba(199,31,55,0.25);
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  /* background: var(--bg-0); */
+  color: var(--ink);
+  font-family: 'Courier New', monospace;
+  position: relative;
+  overflow: hidden;
+}
+
+/* layered background */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(40,40,60,0.9) 0%, rgba(10,10,15,1) 70%),
+    url("/textures/canvas-grain.png");
+  background-size: cover, 300px 300px;
+  /* background-blend-mode: multiply; */
+  z-index: -2;
+}
+
+/* vignette */
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(0,0,0,0.75) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* header / branding */
+.header {
+  display: grid;
+  gap: 6px;
+  place-items: center;
+  margin: 28px 0 8px;
+  text-align: center;
+}
+.title {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-size: clamp(24px, 4vw, 34px);
+  text-shadow: 0 0 18px var(--glow);
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* board container */
+.board-wrap {
+  display: grid;
+  place-items: center;
+  gap: 16px;
+}
+
+/* dynamic grid sizing from inline style gridTemplateColumns */
+.board {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  background: linear-gradient(180deg, #0f1217, #121722);
+  border: 1px solid var(--tile-edge);
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.02) inset;
+}
+
+/* tiles */
+.cell {
+  width: 84px; height: 84px;
+  display: grid; place-items: center;
+  background: var(--tile);
+  border: 1px solid var(--tile-edge);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35) inset;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+  cursor: pointer;
+}
+.cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.cell:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #3a4358;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45) inset, 0 0 0 2px rgba(255,255,255,0.02);
+}
+.cell:disabled {
+  opacity: 0.9;
+  cursor: default;
+}
+
+/* icon sizing */
+.icon { width: 56px; height: 56px; display: block; }
+.icon--x { color: var(--x-color); }
+.icon--o { color: var(--o-color); }
+
+/* controls */
+.controls {
+  display: flex; gap: 16px; align-items: center; justify-content: center;
+  flex-wrap: wrap;
+}
+.radio {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.03);
+  padding: 6px 10px; border-radius: 12px; border: 1px solid var(--tile-edge);
+}
+.radio input { accent-color: var(--accent); }
+
+/* status */
+.status {
+  min-height: 24px;
+  color: var(--muted);
+}
+.status .win { color: var(--accent); }
+.status .ai  { color: var(--x-color); }
+
+/* prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .cell { transition: none; }
+  .title { text-shadow: none; }
+}
