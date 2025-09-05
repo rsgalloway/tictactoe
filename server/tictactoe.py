@@ -59,6 +59,7 @@ class Status:
 _CACHE: Dict[str, Tuple[int, int]] = {}
 
 
+# TODO: support different board sizes (4x4, 5x5, 6x6, etc.)
 def new_board(size: int = BOARD_SIZE) -> str:
     """Create a new empty board.
 
