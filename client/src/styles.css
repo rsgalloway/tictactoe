@@ -21,8 +21,14 @@ html, body, #root {
   overflow: hidden;
 }
 
+@keyframes drift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 200px 200px, 0 0; }
+}
+
 /* layered background */
 body::before {
+  animation: drift 120s linear infinite;
   content: "";
   position: absolute;
   inset: 0;
