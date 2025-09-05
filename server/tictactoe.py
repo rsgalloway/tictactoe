@@ -138,6 +138,27 @@ def _available_moves(board: str) -> List[int]:
     return [i for i, ch in enumerate(board) if ch == Chars.EMPTY]
 
 
+def _winning_moves(board: str, player: str) -> List[int]:
+    """Return list of immediate winning move indices for the given player.
+    Iterates over the current board and looks for moves that would result in an
+    immediate win for example: XO..OX.OX.
+
+    :param board: 9-char string representing the board.
+    :param player: either Chars.HUMAN or Chars.AI.
+    :return: list of indices (0-8) that would result in an immediate win for the player.
+    """
+    wins = []
+    for i, ch in enumerate(board):
+        if ch == Chars.EMPTY:
+            nb = apply_move(board, i, player)
+            status, _ = is_terminal(nb)
+            if (player == Chars.AI and status == Status.O_WON) or (
+                player == Chars.HUMAN and status == Status.X_WON
+            ):
+                wins.append(i)
+    return wins
+
+
 def validate_move(board: str, idx: Optional[int]) -> Tuple[bool, str]:
     """Validate a proposed move.
 
@@ -239,6 +260,12 @@ def best_ai_reply(board: str) -> int:
     # make sure game is still running
     if status != Status.PLAYING:
         raise RuntimeError(Errors.NO_VALID_MOVES)
+
+    # look for immediate win (i.e. win in one move)
+    # TODO: deterministic preference (e.g. center, corners, sides)
+    immediate = _winning_moves(board, Chars.AI)
+    if immediate:
+        return immediate[0]
 
     # make sure it's AI's turn
     player = _next_player(board)
