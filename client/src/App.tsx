@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import './styles.css'
+import { iconPath } from './assets'
 
 // get the API URL from environment variable or default to localhost
 const API_URL = (import.meta.env.API_URL as string) || 'http://localhost:8000'
@@ -11,6 +13,7 @@ export default function App() {
     const [board, setBoard] = useState<string>('.........')
     const [status, setStatus] = useState<Status>('playing')
     const [busy, setBusy] = useState(false)
+    const side = Math.sqrt(board.length) | 0
   
     // initialize a new game on component mount
     useEffect(() => {
@@ -48,28 +51,50 @@ export default function App() {
       setStatus('playing')
     }
   
+    // function to render each cell
+    const renderCell = (ch: string, i: number) => {
+      let src = ''
+      let alt = ''
+      if (ch === 'X') { src = iconPath('tick'); alt = 'tick (X)'; }
+      if (ch === 'O') { src = iconPath('eyeball'); alt = 'eyeball (O)'; }
+  
+      return (
+        <button
+          key={i}
+          role="gridcell"
+          aria-label={`cell ${i}`}
+          className="cell"
+          onClick={() => clickCell(i)}
+          disabled={busy || ch !== '.' || status !== 'playing'}
+        >
+          {ch === '.' ? null : (
+            <img src={src} alt={alt} width={56} height={56} className="icon" />
+          )}
+        </button>
+      )
+    }
+  
     return (
-      <main style={{ display: 'grid', placeItems: 'center', minHeight: '100vh', gap: 16 }}>
-        <h1>Tic-Tac-Toe</h1>
-        <div role="grid" aria-label="Tic Tac Toe board" style={{
-          display: 'grid', gridTemplateColumns: 'repeat(3, 80px)', gap: 6
-        }}>
-          {Array.from(board).map((ch, i) => (
-            <button
-              key={i}
-              role="gridcell"
-              aria-label={`cell ${i}`}
-              onClick={() => clickCell(i)}
-              disabled={busy || ch !== '.' || status !== 'playing'}
-              style={{ width: 80, height: 80, fontSize: 40 }}>
-              {ch === '.' ? '' : ch}
-            </button>
-          ))}
-        </div>
-        <p aria-live="polite">
-          {status === 'playing' ? (busy ? 'Thinking…' : 'Your move') :
-            status === 'x_won' ? 'You win! (auto-reset in 2.5s)' :
-            status === 'o_won' ? 'AI wins! (auto-reset in 2.5s)' : 'Draw. (auto-reset in 2.5s)'}
+      <main className="board-wrap" aria-live="polite">
+        <header className="header">
+          <div className="title">Tïck-Tac-Toe</div>
+          <div className="subtitle">a tiny, unbeatable diversion</div>
+        </header>
+  
+        <section
+          className="board"
+          role="grid"
+          aria-label={`Tic Tac Toe board ${side} by ${side}`}
+          style={{ gridTemplateColumns: `repeat(${side}, 84px)` }}
+        >
+          {Array.from(board).map((ch, i) => renderCell(ch, i))}
+        </section>
+  
+        <p className="status">
+          {status === 'playing' ? (busy ? <span className="ai">thinking…</span> : 'your move') :
+           status === 'x_won' ? <span className="win">you win! (resetting)</span> :
+           status === 'o_won' ? <span className="win">AI wins! (resetting)</span> :
+           'draw (resetting)'}
         </p>
       </main>
     )
