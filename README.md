@@ -12,6 +12,12 @@ A monorepo that contains a Tic-Tac-Toe game.
 | Containerization  | Separate Dockerfiles (client/server)                 |
 | Deployment       | ECS Fargate                                          |
 
+
+### Minimax
+
+Uses [Minimax](https://en.wikipedia.org/wiki/Minimax) algorithm (recursive search
+and scoring) for AI game play.
+
 ### API Design
 
 Minimal, stateless API using a compact board representation to avoid server

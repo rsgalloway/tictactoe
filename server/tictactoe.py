@@ -1,5 +1,5 @@
 __doc__ = """
-Contains the Tic-Tac-Toe game logic, including initial minimax implementation.
+Contains the Tic-Tac-Toe game logic.
 
 Board is a 9-char string, for example, an empty board: "........."
 
@@ -8,7 +8,7 @@ Board is a 9-char string, for example, an empty board: "........."
 - AI: "O"
 """
 
-from typing import Optional, Tuple, List
+from typing import Dict, Optional, Tuple, List
 
 # default board size
 BOARD_SIZE: int = 9
@@ -53,6 +53,10 @@ class Status:
     PLAYING: str = "playing"
     O_WON: str = "o_won"
     X_WON: str = "x_won"
+
+
+# stores board evaluations to speed up minimax
+_CACHE: Dict[str, Tuple[int, int]] = {}
 
 
 def new_board(size: int = BOARD_SIZE) -> str:
@@ -183,6 +187,11 @@ def _minimax(board: str, player: str, alpha: int, beta: int) -> Tuple[int, int]:
     if status != Status.PLAYING or player not in (Chars.HUMAN, Chars.AI):
         return -1, _score_terminal(status)
 
+    # check for cache hits
+    cache_hit = _CACHE.get(board)
+    if cache_hit is not None:
+        return cache_hit
+
     # get all available moves
     moves = _available_moves(board)
 
@@ -198,6 +207,7 @@ def _minimax(board: str, player: str, alpha: int, beta: int) -> Tuple[int, int]:
             alpha = max(alpha, best_val)
             if beta <= alpha:
                 break
+        _CACHE[board] = (best_idx, best_val)
         return best_idx, best_val
 
     # human player, minimizing
@@ -212,6 +222,7 @@ def _minimax(board: str, player: str, alpha: int, beta: int) -> Tuple[int, int]:
             beta = min(beta, worst_val)
             if beta <= alpha:
                 break
+        _CACHE[board] = (worst_idx, worst_val)
         return worst_idx, worst_val
 
 
@@ -238,6 +249,7 @@ def best_ai_reply(board: str) -> int:
         for idx in _available_moves(board):
             child = apply_move(board, idx, Chars.HUMAN)
             ai_idx, val = _minimax(child, Chars.AI, alpha=-2, beta=+2)
+            # maximize AI score
             if val > best_val:
                 best_val = val
                 best_choice = ai_idx
