@@ -57,6 +57,13 @@ curl http://localhost:8000/health
 curl -X POST http://localhost:8000/api/new
 ```
 
+### Running tests
+
+```bash
+cd server
+pytest ./tests
+```
+
 ### Docker
 
 Building a dev Docker image and running the server app:
