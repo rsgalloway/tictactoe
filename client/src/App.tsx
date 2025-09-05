@@ -15,6 +15,7 @@ export default function App() {
     // initialize a new game on component mount
     useEffect(() => {
       fetch(`${API_URL}/api/new`, { method: 'POST' }).then(r => r.json()).then(d => {
+        console.debug(d);
         setBoard(d.board)
         setStatus('playing')
       })
@@ -29,6 +30,7 @@ export default function App() {
         body: JSON.stringify({ board, move: i })
       })
       const d = await res.json()
+      console.debug(d);
       setBoard(d.board)
       setStatus(d.status)
       setBusy(false)
