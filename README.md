@@ -69,11 +69,13 @@ Run the server:
 python3 app.py
 ```
 
-### Running a health check
+#### Health check
 
 ```bash
-curl http://localhost:8000/health
-curl -X POST http://localhost:8000/api/new
+$ curl http://localhost:8000/health
+{
+  "ok": true
+}
 ```
 
 ### Running tests
