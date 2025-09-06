@@ -133,3 +133,15 @@ Building a dev Docker image and running the client app:
 sudo docker build --no-cache -t tictactoe-web:dev .
 sudo docker run --rm -p 5173:5173 -e API_URL=http://localhost:8000 tictactoe-web:dev
 ```
+
+## TODOs
+
+- Complete Fargate deployment
+- Sound effects (on click, on win, on draw)
+- Animated icons
+- Improved background image
+- Implement last-move prediction
+- Auto-play (AI vs. AI)
+- Multiplayer over network
+- Leaderboard / score keeping
+- Alternative board sizes (4x4, 5x5, 6x6, etc)
