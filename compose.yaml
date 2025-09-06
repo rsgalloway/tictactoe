@@ -1,11 +1,11 @@
 services:
   api:
     build: ./server
-    ports: ["8080:8080"]
+    ports: ["8000:8000"]
     environment:
       - FLASK_ENV=development
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -14,7 +14,7 @@ services:
     build: ./client
     ports: ["5173:5173"]
     environment:
-      - API_URL=http://localhost:8080
+      - API_URL=http://localhost:8000
     depends_on:
       api:
         condition: service_healthy
