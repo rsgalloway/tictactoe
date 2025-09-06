@@ -33,6 +33,7 @@ export default function App() {
   
     // function to handle cell click
     const clickCell = async (i: number) => {
+      playClick();
       if (busy || status !== 'playing' || board[i] !== '.') return
       setBusy(true)
       const res = await fetch(`${API_URL}/api/move`, {
@@ -52,15 +53,23 @@ export default function App() {
       }
     }
 
-    // function to restart the game
-    const restart = async () => {
-      const r = await fetch(`${API_URL}/api/new`, { method: 'POST' })
-      const d = await r.json()
-      setBoard(d.board)
-      setStatus('playing')
-      setWinningLine(d.lines || null)
+    // function to play a click sound
+    function playClick() {
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.value = 440; // Hz
+      gain.gain.value = 0.1; // volume
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.1); // 100ms blip
     }
-  
+
     // function to render each cell
     const renderCell = (ch: string, i: number) => {
       let src = ''

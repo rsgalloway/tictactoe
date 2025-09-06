@@ -136,6 +136,8 @@ sudo docker run --rm -p 5173:5173 -e API_URL=http://localhost:8000 tictactoe-web
 
 ## TODOs
 
+The following is a partial to-do list to expand the game:
+
 - Complete Fargate deployment
 - Sound effects (on click, on win, on draw)
 - Animated icons
