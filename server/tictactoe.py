@@ -3,6 +3,7 @@ Contains the Tic-Tac-Toe game logic.
 
 Board is a 9-char string, for example, an empty board: "........."
 
+Board characters:
 - empty: "."
 - human: "X"
 - AI: "O"
@@ -248,6 +249,7 @@ def _minimax(board: str, player: str, alpha: int, beta: int) -> Tuple[int, int]:
         return worst_idx, worst_val
 
 
+# TODO: optionally predict outcome if only one empty cell remains
 def best_ai_reply(board: str) -> int:
     """
     Return optimal index for AI ('O').
