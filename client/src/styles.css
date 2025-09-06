@@ -6,8 +6,8 @@
   --muted: #9aa3b2;
   --accent: #c71f37;       /* blood red */
   --accent-2: #8f153b;     /* wine */
-  --tile: #1e2430;
-  --tile-edge: #2a3141;
+  --tile: #331d04;
+  --tile-edge: #38281a;
   --glow: rgba(199,31,55,0.25);
 }
 
@@ -84,10 +84,10 @@ body::after {
   display: grid;
   gap: 8px;
   padding: 14px;
-  background: linear-gradient(180deg, #0f1217, #121722);
+  background: linear-gradient(180deg, #523010, #311801);
   border: 1px solid var(--tile-edge);
   border-radius: 18px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.12) inset;
 }
 
 /* tiles */
@@ -97,7 +97,7 @@ body::after {
   background: var(--tile);
   border: 1px solid var(--tile-edge);
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.35) inset;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) inset;
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
   cursor: pointer;
 }
@@ -120,7 +120,12 @@ body::after {
 }
 
 /* icon sizing */
-.icon { width: 75px; height: 75px; display: block; }
+.icon {
+  width: 75px;
+  height: 75px;
+  display: block;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) inset;
+}
 .icon--x { color: var(--x-color); }
 .icon--o { color: var(--o-color); }
 
