@@ -52,7 +52,26 @@ determine the next best move. Each position on the board is scored according to 
 win/loss/draw (+1/-1/0) for the AI, and the position with the maximum score for
 the AI is returned.
 
-## Server
+## Running the Game
+
+To run the game quickly in with a dev config, you can use the provided Makefile:
+
+Install step:
+
+```bash
+make install
+```
+
+Run the api server and web client in separate shells:
+
+```bash
+make api
+make web
+```
+
+## Development
+
+### Server
 
 Set up a virtual environment and install requirements:
 
@@ -72,20 +91,17 @@ python3 app.py
 #### Health check
 
 ```bash
-$ curl http://localhost:8000/health
-{
-  "ok": true
-}
+curl http://localhost:8000/health
 ```
 
-### Running tests
+#### Running tests
 
 ```bash
 cd server
 pytest ./tests
 ```
 
-### Docker
+#### Docker
 
 Building a dev Docker image and running the server app:
 
@@ -94,7 +110,7 @@ sudo docker build --no-cache -t tictactoe-api:dev .
 sudo docker run --rm -p 8000:8000 tictactoe-api:dev
 ```
 
-## Web client
+### Web Client
 
 Install requirements:
 
@@ -109,7 +125,7 @@ Run the web client:
 npm run dev
 ```
 
-### Docker
+#### Docker
 
 Building a dev Docker image and running the client app:
 
