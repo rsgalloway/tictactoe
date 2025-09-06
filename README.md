@@ -2,6 +2,8 @@
 
 A monorepo that contains a Tic-Tac-Toe game.
 
+![Tic-Tac-Toe Screenshot](ticktactoe.png)
+
 ### Architecture
 
 | Feature          | Description |
