@@ -111,9 +111,13 @@ body::after {
   opacity: 0.9;
   cursor: default;
 }
+.cell--win {
+  background: rgb(204, 204, 128) !important;
+  box-shadow: 0 0 12px 4px rgba(255, 255, 0, 0.6);
+}
 
 /* icon sizing */
-.icon { width: 56px; height: 56px; display: block; }
+.icon { width: 75px; height: 75px; display: block; }
 .icon--x { color: var(--x-color); }
 .icon--o { color: var(--o-color); }
 

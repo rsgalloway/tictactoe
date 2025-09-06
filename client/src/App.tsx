@@ -13,16 +13,23 @@ export default function App() {
     const [board, setBoard] = useState<string>('.........')
     const [status, setStatus] = useState<Status>('playing')
     const [busy, setBusy] = useState(false)
+    const [winningLine, setWinningLine] = useState<number[] | null>(null)
     const side = Math.sqrt(board.length) | 0
   
     // initialize a new game on component mount
-    useEffect(() => {
-      fetch(`${API_URL}/api/new`, { method: 'POST' }).then(r => r.json()).then(d => {
-        console.debug(d);
-        setBoard(d.board)
-        setStatus('playing')
+    useEffect(() => { startNew(9) }, [])
+
+    async function startNew(size: number) {
+      const r = await fetch(`${API_URL}/api/new`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ size })
       })
-    }, [])
+      const d = await r.json()
+      setBoard(d.board)
+      setStatus('playing')
+      setWinningLine(null)
+    }
   
     // function to handle cell click
     const clickCell = async (i: number) => {
@@ -33,13 +40,15 @@ export default function App() {
         body: JSON.stringify({ board, move: i })
       })
       const d = await res.json()
-      console.debug(d);
+      setBusy(false)
+      if (d.error) return alert(d.error)
+  
       setBoard(d.board)
       setStatus(d.status)
-      setBusy(false)
+      setWinningLine(d.lines || null)
   
       if (d.status !== 'playing') {
-        setTimeout(() => restart(), 2500)
+        setTimeout(() => startNew(9), 2500)
       }
     }
 
@@ -49,6 +58,7 @@ export default function App() {
       const d = await r.json()
       setBoard(d.board)
       setStatus('playing')
+      setWinningLine(d.lines || null)
     }
   
     // function to render each cell
@@ -57,13 +67,14 @@ export default function App() {
       let alt = ''
       if (ch === 'X') { src = iconPath('tick'); alt = 'tick (X)'; }
       if (ch === 'O') { src = iconPath('eyeball'); alt = 'eyeball (O)'; }
+      const isWinning = winningLine?.includes(i)
   
       return (
         <button
           key={i}
           role="gridcell"
           aria-label={`cell ${i}`}
-          className="cell"
+          className={`cell ${isWinning ? 'cell--win' : ''}`}
           onClick={() => clickCell(i)}
           disabled={busy || ch !== '.' || status !== 'playing'}
         >
