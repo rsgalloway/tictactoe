@@ -52,6 +52,20 @@ determine the next best move. Each position on the board is scored according to 
 win/loss/draw (+1/-1/0) for the AI, and the position with the maximum score for
 the AI is returned.
 
+## Requirements
+
+To run the project locally you’ll need:
+
+- **Python** ≥ 3.10 (tested with 3.11/3.12)
+  - Used for the Flask API + Minimax logic
+- **Node.js** ≥ 18 (Node 20 LTS recommended)
+  - Required for Vite (React dev server / build)
+- **npm** ≥ 9 (comes with Node LTS)
+
+Optional:
+- **Docker** ≥ 20.10 (if you want to build and run via containers)
+- **Make** (for `make install`, `make api`, `make web`, `make run` convenience targets)
+
 ## Running the Game
 
 To run the game quickly in with a dev config, you can use the provided Makefile:

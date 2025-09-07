@@ -23,7 +23,11 @@ install:
 	else \
 		cd $(SERVER_DIR) && python3 -m virtualenv .venv && $(PIP) install -r requirements.txt; \
 	fi
-	cd $(CLIENT_DIR) && $(NPM) ci
+	if ! $(NPM) --version | awk -F. '{ exit ($$1 < 20) }'; then \
+		echo "Node.js version 20 or higher is required."; \
+		exit 1; \
+	fi
+	cd $(CLIENT_DIR) && $(NPM) install
 
 api:
 	cd $(SERVER_DIR) && FLASK_APP=app.py FLASK_ENV=development $(PYTHON) -m flask run --port 8000
