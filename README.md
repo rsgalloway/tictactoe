@@ -54,9 +54,9 @@ the AI is returned.
 
 ## Requirements
 
-To run the project locally you’ll need:
+To run the project locally you will need:
 
-- **Python** ≥ 3.10 (tested with 3.11/3.12)
+- **Python** ≥ 3.8 (tested with 3.8/3.10)
   - Used for the Flask API + Minimax logic
 - **Node.js** ≥ 18 (Node 20 LTS recommended)
   - Required for Vite (React dev server / build)
@@ -64,23 +64,29 @@ To run the project locally you’ll need:
 
 Optional:
 - **Docker** ≥ 20.10 (if you want to build and run via containers)
-- **Make** (for `make install`, `make api`, `make web`, `make run` convenience targets)
+
+#### Versions
+
+Tested with the following versions on Ubuntu 20.04:
+
+```bash
+$ node --version
+v20.7.0
+$ npm --version
+10.1.0
+$ docker --version
+Docker version 28.1.1, build 4eba377
+$ python --version
+Python 3.8.10
+```
 
 ## Running the Game
 
-To run the game quickly in with a dev config, you can use the provided Makefile:
-
-Install step:
-
-```bash
-make install
-```
-
-Run the api server and web client in separate shells:
+The easiest way to get the game running with one command is using docker compose
+with the provided `compose.yaml` file:
 
 ```bash
-make api
-make web
+sudo docker compose up --build
 ```
 
 ## Development
